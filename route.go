@@ -1,13 +1,14 @@
 package gorest
 import (
 	"net/http"
-	"path"
+//	"path"
 	"strings"
-	"fmt"
+	"regexp"
+	"path"
 )
 
 type Route struct {
-	controllers map[string]string
+	controllers map[string]RoutePath
 }
 
 type HttpMethod string
@@ -29,12 +30,59 @@ func GetRouteInstance() *Route {
 	return routeInstance
 }
 
+func checkPath(routePaths []string, requestPaths []string, restParams *map[string]string) bool {
+
+	isMatch := true
+	if(len(routePaths)!=len(requestPaths)) {
+		return  false;
+	} else  {
+		for key, val := range routePaths  {
+			r1,_ := regexp.Compile("^:(.*)$")
+			r2,_ := regexp.Compile("^(.*)}$")
+
+			match1 := r1.FindSubmatch(val);
+			match2 := r2.FindSubmatch(val);
+
+			match :=[]string{}
+			if(len(match1)>=0) {
+				match := match1
+			} else if(len(match2)>=0) {
+				match := match2
+			}
+
+			if(len(match)>0) {
+				restParams[match[1]]=requestPaths[key]
+			} else  {
+				if(requestPaths[key]!=val) {
+					return false
+				}
+			}
+		}
+		return  isMatch
+	}
+}
+
 func (route *Route) ServeHTTP(rsp http.ResponseWriter,req *http.Request)  {
 	reqPath := path.Clean(req.URL.Path)
 
-	pathElems := strings.Split(reqPath,"//")
+	pathElems := strings.Split(reqPath,"/")
 
-	fmt.Println(pathElems)
+	matchRoute := RoutePath{}
+
+	restParams :=[]string{}
+
+	for _, controller := range route.controllers {
+
+		inputPrams :=[]string{}
+
+		if(checkPath(controller.paths,pathElems,inputPrams)) {
+			matchRoute=controller
+			restParams = &inputPrams
+			break;
+		}
+	}
+
+
 }
 
 // add new GET action
@@ -71,8 +119,8 @@ type RoutePath struct {
 }
 
 //define new RoutePath
-func newRoutePath(path string, controller string) *RoutePath {
-	paths := strings.Split(path,"//")
+func newRoutePath(path string, controller string) RoutePath {
+	paths := strings.Split(path,"/")
 
-	return &RoutePath{paths,controller}
+	return RoutePath{paths,controller}
 }
