@@ -1,4 +1,10 @@
 package gorest
+import (
+	"net/http"
+	"path"
+	"strings"
+	"fmt"
+)
 
 type Route struct {
 	controllers map[string]string
@@ -23,6 +29,14 @@ func GetRouteInstance() *Route {
 	return routeInstance
 }
 
+func (route *Route) ServeHTTP(rsp http.ResponseWriter,req *http.Request)  {
+	reqPath := path.Clean(req.URL.Path)
+
+	pathElems := strings.Split(reqPath,"//")
+
+	fmt.Println(pathElems)
+}
+
 // add new GET action
 func (route *Route) GET(pattern string, controllerMethod string)  {
 	route.Action(HTTP_GET,pattern,controllerMethod);
@@ -41,5 +55,24 @@ func (route *Route) DELETE(pattern string, controllerMethod string)  {
 }
 // perform add new action
 func (route *Route) Action(httpMethod HttpMethod,pattern string, controllerMethod string)  {
+	routePath := newRoutePath(pattern,controllerMethod)
 
+	if route.controllers==nil {
+		route.controllers = make(map[string]RoutePath)
+	}
+
+	route.controllers[pattern]=routePath
+}
+
+//define RoutePath struct
+type RoutePath struct {
+	paths []string
+	controller string
+}
+
+//define new RoutePath
+func newRoutePath(path string, controller string) *RoutePath {
+	paths := strings.Split(path,"//")
+
+	return &RoutePath{paths,controller}
 }
