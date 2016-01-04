@@ -63,10 +63,6 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	request := NewRequest(req)
-
-	response := NewResponse(rsp)
-
 	reqPath := path.Clean(req.URL.Path)
 
 	pathElems := strings.Split(reqPath, "/")
@@ -90,6 +86,11 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 			break
 		}
 	}
+
+	request := NewRequest(req)
+
+	response := NewResponse(rsp)
+
 	if !isMatched {
 		// not found
 		response.Text("URL Not Found!",400)
