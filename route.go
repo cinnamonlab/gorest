@@ -71,7 +71,7 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 
 		inputPrams := map[string]string{}
 
-		if checkPath(controller.paths, pathElems, &inputPrams) {
+		if checkPath(controller.Paths, pathElems, &inputPrams) {
 			matchRoute = controller
 			//			restParams = &inputPrams
 			break
@@ -81,28 +81,31 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 		// not found
 		//rsp.Write("Error!")
 	} else {
-		matchRoute.controller(rsp, req, restParams)
+		matchRoute.Controllers(rsp, req, restParams)
 	}
 }
 
 //define RoutePath struct
 type RoutePath struct {
-	method     string
-	path       string
-	paths      []string
-	controller APIFunc
+	Method     string
+	Path       string
+	Paths      []string
+	Controllers APIFunc
 }
 
-func (route *Route) addRoute(routeBase *BaseController) {
+func (route *Route) AddRoute(routeBase BaseController) {
 	routes := routeBase.Routes()
-
-	for _, r := range routes {
-		val, ok := route.controllers[r.method]
-		if !ok {
-
-		}
+	if route.controllers == nil {
+		route.controllers = make(map[string]map[string]RoutePath)
 	}
 
+	for _, r := range routes {
+		_, ok := route.controllers[r.Method]
+		if !ok {
+			route.controllers[r.Method] = make(map[string]RoutePath)
+		}
+		route.controllers[r.Method][r.Path] = r
+	}
 }
 
 /*func (routePath *RoutePath) splitPaths() {

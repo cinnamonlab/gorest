@@ -1,26 +1,29 @@
 package user
+
 import (
 	"github.com/cinnamonlab/gorest"
-	"github.com/cinnamonlab/gorest/test/controller"
+	"github.com/cinnamonlab/gorest/RouteUtils"
 )
 
-
-type UserController struct {
+type UserController struct { // implement BaseController interface
 	routes []gorest.RoutePath
 }
 
-func newUserController() *controller.RouteBase  {
+func NewController() gorest.BaseController {
 	u := &UserController{}
 	u.initRoutes()
 
-	return  u
+	return u
 }
 
+// implement function from baseController interface
 func (u *UserController) Routes() []gorest.RoutePath {
 	return u.routes
 }
 
-func (u *UserController) initRoutes()  {
-	u.routes = []gorest.RoutePath {
+// init all routes for user
+func (u *UserController) initRoutes() {
+	u.routes = []gorest.RoutePath{
+		RouteUtils.CreateGetRoute("/users/me",u.getMySelf),
 	}
 }
