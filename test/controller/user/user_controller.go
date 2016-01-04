@@ -1,8 +1,11 @@
 package user
-import "net/http"
+import (
+	"github.com/cinnamonlab/gorest"
+)
 
-func (u *UserController) getMySelf(w http.ResponseWriter, r *http.Request, vars map[string]string) error {
-	a := 1
-	a++
-	return nil
+func (u *UserController) GetMySelf(w *gorest.Response, r *gorest.Request, vars map[string]string) {
+	w.Text("OK",200)
+}
+func (u *UserController) GetMyByID(w *gorest.Response, r *gorest.Request, vars map[string]string) {
+	w.Text("OK111",200)
 }

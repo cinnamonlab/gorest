@@ -6,13 +6,14 @@ import (
 	"path"
 	"regexp"
 	"strings"
+	"fmt"
 )
 
 type Route struct { // implement http.Handler interface
 	controllers map[string]map[string]RoutePath
 }
 
-type APIFunc func(w http.ResponseWriter, r *http.Request, vars map[string]string) error
+type APIFunc func(w *Response, r *Request, vars map[string]string)
 
 var routeInstance *Route
 
@@ -24,28 +25,28 @@ func GetRouteInstance() *Route {
 	return routeInstance
 }
 
-func checkPath(routePaths []string, requestPaths []string, restParams *map[string]string) bool {
+func checkPath(routePaths []string, requestPaths []string, restParams map[string]string) bool {
 
 	isMatch := true
 	if len(routePaths) != len(requestPaths) {
 		return false
 	} else {
+		r1, _ := regexp.Compile("^:(.*)$")
+		r2, _ := regexp.Compile("^{(.*)}$")
 		for key, val := range routePaths {
-			r1, _ := regexp.Compile("^:(.*)$")
-			r2, _ := regexp.Compile("^(.*)}$")
 
 			match1 := r1.FindStringSubmatch(val)
 			match2 := r2.FindStringSubmatch(val)
 
 			match := []string{}
-			if len(match1) >= 0 {
+			if len(match1) > 0 {
 				match = match1
-			} else if len(match2) >= 0 {
+			} else if len(match2) > 0 {
 				match = match2
 			}
 
 			if len(match) > 0 {
-				//				restParams[match[1]]=requestPaths[key]
+				restParams[match[1]]=requestPaths[key]
 			} else {
 				if requestPaths[key] != val {
 					return false
@@ -57,11 +58,23 @@ func checkPath(routePaths []string, requestPaths []string, restParams *map[strin
 }
 
 func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
+
+	if err := req.ParseForm(); err != nil {
+		http.Error(rsp, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	request := NewRequest(req)
+
+	response := NewResponse(rsp)
+
 	reqPath := path.Clean(req.URL.Path)
 
 	pathElems := strings.Split(reqPath, "/")
 
 	var matchRoute RoutePath
+
+	isMatched := false
 
 	var restParams map[string]string
 
@@ -71,17 +84,18 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 
 		inputPrams := map[string]string{}
 
-		if checkPath(controller.Paths, pathElems, &inputPrams) {
+		if checkPath(controller.Paths, pathElems, inputPrams) {
 			matchRoute = controller
-			//			restParams = &inputPrams
+			restParams = inputPrams
+			isMatched=true
 			break
 		}
 	}
-	if &matchRoute == nil {
+	if !isMatched {
 		// not found
-		//rsp.Write("Error!")
+		response.Text("URL Not Found!",400)
 	} else {
-		matchRoute.Controllers(rsp, req, restParams)
+		matchRoute.Controllers(response, request, restParams)
 	}
 }
 
@@ -93,6 +107,7 @@ type RoutePath struct {
 	Controllers APIFunc
 }
 
+// register routes from controller instance
 func (route *Route) AddRoute(routeBase BaseController) {
 	routes := routeBase.Routes()
 	if route.controllers == nil {
@@ -107,7 +122,3 @@ func (route *Route) AddRoute(routeBase BaseController) {
 		route.controllers[r.Method][r.Path] = r
 	}
 }
-
-/*func (routePath *RoutePath) splitPaths() {
-	routePath.paths = strings.Split(path,"/")
-}*/

@@ -5,6 +5,7 @@ import (
 
 	"github.com/cinnamonlab/gorest"
 	"github.com/cinnamonlab/gorest/test/controller/user"
+	"fmt"
 )
 
 func main() {
@@ -15,4 +16,6 @@ func main() {
 	route.AddRoute(userController)
 
 	http.ListenAndServe(":3000", route)
+
+	fmt.Println("server is running at http://localhost:3000/")
 }
