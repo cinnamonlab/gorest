@@ -6,7 +6,6 @@ import (
 	"path"
 	"regexp"
 	"strings"
-	"fmt"
 )
 
 type Route struct { // implement http.Handler interface

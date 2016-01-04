@@ -4,7 +4,8 @@ import (
 )
 
 func (u *UserController) GetMySelf(w *gorest.Response, r *gorest.Request, vars map[string]string) {
-	w.Text("OK",200)
+	mapavl := map[string]string {"sss":"ssssss"}
+	w.Json(mapavl,200)
 }
 func (u *UserController) GetMyByID(w *gorest.Response, r *gorest.Request, vars map[string]string) {
 	w.Text("OK111",200)
