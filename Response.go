@@ -5,34 +5,34 @@ import (
 )
 
 type Response struct {
-	response http.ResponseWriter
+	http.ResponseWriter
 }
 
 func NewResponse(response http.ResponseWriter) *Response {
 
-	rsp := &Response{response : response}
+	rsp := &Response{response}
 
 	return  rsp
 }
 
 func (rsp * Response) Json(content interface{}, code int)  {
-	rsp.response.WriteHeader(code)
-	rsp.response.Header().Set("Content-Type", "application/json")
+	rsp.WriteHeader(code)
+	rsp.Header().Set("Content-Type", "application/json")
 
 	js, err := json.Marshal(content)
 	if err != nil {
-		http.Error(rsp.response, err.Error(), http.StatusInternalServerError)
+		http.Error(rsp, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	rsp.response.Write(js)
+	rsp.Write(js)
 }
 func (rsp * Response) Text(content string, code int)  {
-	rsp.response.WriteHeader(code)
-	rsp.response.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	rsp.response.Write([]byte(content))
+	rsp.WriteHeader(code)
+	rsp.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	rsp.Write([]byte(content))
 }
 
 func (rsp *Response) Redirect(redirectTo string)  {
-	rsp.response.Header().Add("Location:",redirectTo)
+	rsp.Header().Add("Location:",redirectTo)
 }
