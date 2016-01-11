@@ -1,5 +1,8 @@
 package gorest
-import "net/http"
+import (
+	"net/http"
+	"fmt"
+)
 
 type Application struct {
 	Config interface{} // the application config
@@ -21,7 +24,13 @@ func (app *Application) Init()  {
 	app.Route = GetRouteInstance()
 }
 
-func (app *Application) StartHttpServer(port int) error  {
+func (app *Application) StartHttpServer(port string)  {
 	err := http.ListenAndServe(port,application.Route);
-	return err
+
+	if(err!=nil) {
+		fmt.Println("Error:"+err.Error())
+		panic(err)
+	} else  {
+		fmt.Println("Http Server started at http://localhost:" + port);
+	}
 }
