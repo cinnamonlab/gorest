@@ -9,7 +9,6 @@ import (
 )
 
 type Route struct { // implement http.Handler interface
-	*http.ServeMux
 	controllers map[string]map[string]RoutePath
 }
 
@@ -20,7 +19,7 @@ var routeInstance *Route
 // Singleton Route instance
 func GetRouteInstance() *Route {
 	if routeInstance == nil {
-		routeInstance = &Route{http.DefaultServeMux,nil}
+		routeInstance = &Route{}
 	}
 	return routeInstance
 }
@@ -58,6 +57,7 @@ func checkPath(routePaths []string, requestPaths []string, restParams map[string
 }
 
 func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
+
 	if err := req.ParseForm(); err != nil {
 		http.Error(rsp, err.Error(), http.StatusBadRequest)
 		return
@@ -93,7 +93,7 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 
 	if !isMatched {
 		// not found
-		response.Text("URL Not Found!",400)
+		http.DefaultServeMux.ServeHTTP(rsp,req)
 	} else {
 		matchRoute.Controllers(response, request, restParams)
 	}

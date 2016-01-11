@@ -23,8 +23,6 @@ func (u *UserController) Routes() []gorest.RoutePath {
 
 // init all routes for user
 func (u *UserController) initRoutes() {
-
-
 	u.routes = []gorest.RoutePath{
 		RouteUtils.CreateGetRoute("/users/me",u.GetMySelf),
 		RouteUtils.CreateGetRoute("/users/{id}",u.GetMyByID),
