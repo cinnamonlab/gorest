@@ -23,7 +23,7 @@ func SharedApplication() *Application {
 func (app *Application) Init()  {
 	app.Route = GetRouteInstance()
 
-	//app.startQueue();
+	app.startQueue();
 }
 
 func (app *Application) StartHttpServer(port string)  {
