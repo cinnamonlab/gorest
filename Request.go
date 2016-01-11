@@ -5,12 +5,12 @@ import (
 )
 
 type Request struct {
-	req *http.Request
+	*http.Request
 	params map[string]string
 }
 
-func NewRequest(request * http.Request) *Request {
-	input := &Request{req:request}
+func NewRequest(request *http.Request) *Request {
+	input := &Request{request,nil}
 	input.params = make(map[string]string)
 
 	return  input
@@ -20,10 +20,10 @@ func NewRequest(request * http.Request) *Request {
 func (input *Request) Has(key string) ( exist bool,val string)  {
 	if val, ok := input.params[key]; ok {
 		return  true,val
-	} else if val, ok := input.req.Form[key]; ok {
-		return false,""
+	} else if val, ok := input.Form[key]; ok {
+		return true,val[0]
 	} else {
-		return  true,val[0]
+		return  false,""
 	}
 }
 // set param to resource
@@ -45,7 +45,7 @@ func (input *Request) Get(key string, defaultVal interface{}  ) interface{} {
 
 // BoolValue transforms a form value in different formats into a boolean type.
 func (input *Request) BoolValue( k string) bool {
-	val :=input.req.FormValue(k)
+	val :=input.FormValue(k)
 	value, err := strconv.ParseBool(val)
 
 	if err!=nil {
@@ -58,7 +58,7 @@ func (input *Request) BoolValue( k string) bool {
 // BoolValueOrDefault returns the default bool passed if the query param is
 // missing, otherwise it's just a proxy to boolValue above
 func (input *Request) BoolValueOrDefault( k string, d bool) bool {
-	if _, ok := input.req.Form[k]; !ok {
+	if _, ok := input.Form[k]; !ok {
 		return d
 	}
 	return input.BoolValue(k)
@@ -77,8 +77,8 @@ func (input *Request) IntValueOrZero(k string) int64 {
 // Int64ValueOrDefault parses a form value into an int64 type. If there is an
 // error, returns the error. If there is no value returns the default value.
 func (input *Request) IntValueOrDefault(field string, def int64) (int64, error) {
-	if input.req.Form.Get(field) != "" {
-		value, err := strconv.ParseInt(input.req.Form.Get(field), 10, 64)
+	if input.Form.Get(field) != "" {
+		value, err := strconv.ParseInt(input.Form.Get(field), 10, 64)
 		if err != nil {
 			return value, err
 		}
