@@ -22,6 +22,8 @@ func SharedApplication() *Application {
 
 func (app *Application) Init()  {
 	app.Route = GetRouteInstance()
+
+	app.StartQueue();
 }
 
 func (app *Application) StartHttpServer(port string)  {
@@ -33,4 +35,8 @@ func (app *Application) StartHttpServer(port string)  {
 	} else  {
 		fmt.Println("Http Server started at http://localhost:" + port);
 	}
+}
+
+func (app *Application) startQueue() {
+
 }
