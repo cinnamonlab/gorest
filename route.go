@@ -9,6 +9,7 @@ import (
 )
 
 type Route struct { // implement http.Handler interface
+	*http.ServeMux
 	controllers map[string]map[string]RoutePath
 }
 
@@ -19,7 +20,7 @@ var routeInstance *Route
 // Singleton Route instance
 func GetRouteInstance() *Route {
 	if routeInstance == nil {
-		routeInstance = &Route{}
+		routeInstance = &Route{http.DefaultServeMux,nil}
 	}
 	return routeInstance
 }
@@ -57,7 +58,6 @@ func checkPath(routePaths []string, requestPaths []string, restParams map[string
 }
 
 func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
-
 	if err := req.ParseForm(); err != nil {
 		http.Error(rsp, err.Error(), http.StatusBadRequest)
 		return
