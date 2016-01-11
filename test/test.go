@@ -11,6 +11,8 @@ import (
 func main() {
 	route := gorest.GetRouteInstance()
 
+	http.Cookie{}
+
 	userController := user.NewController()
 
 	route.AddRoute(userController)
