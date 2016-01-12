@@ -26,5 +26,9 @@ func (u *UserController) initRoutes() {
 	u.routes = []gorest.RoutePath{
 		RouteUtils.CreateGetRoute("/users/me",u.GetMySelf),
 		RouteUtils.CreateGetRoute("/users/{id}",u.GetMyByID),
+		RouteUtils.CreatePostRoute("/users",u.GetMyByID),
+		RouteUtils.CreatePostRoute("/users/infos",u.GetMyByID),
+		RouteUtils.CreatePutRoute("/users",u.GetMyByID),
+		RouteUtils.CreateDeleteRoute("/users/{id}",u.GetMyByID),
 	}
 }

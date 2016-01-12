@@ -2,6 +2,8 @@ package gorest
 import (
 	"net/http"
 	"strconv"
+	"io/ioutil"
+	"errors"
 )
 
 type Request struct {
@@ -16,14 +18,27 @@ func NewRequest(request *http.Request) *Request {
 	return  input
 }
 
+func (input *Request) GetJsonBody() []byte  {
+
+	body, err := ioutil.ReadAll(input.Body)
+	if err != nil {
+		errors.New("can not read request body")
+	}
+	return body
+}
+
 // check input param is exiting or not
-func (input *Request) Has(key string) ( exist bool,val string)  {
+func (input *Request) GetStringValue(key string) string  {
 	if val, ok := input.params[key]; ok {
-		return  true,val
-	} else if val, ok := input.Form[key]; ok {
-		return true,val[0]
+		return  val
 	} else {
-		return  false,""
+		val := input.FormValue(key);
+		if (val!="") {
+			return val
+		} else {
+			val := input.PostFormValue(key);
+			return val
+		}
 	}
 }
 // set param to resource
@@ -33,57 +48,49 @@ func (input *Request) SetParam(key string, value string)  {
 	}
 	input.params[key]=value;
 }
-// get param value
-func (input *Request) Get(key string, defaultVal interface{}  ) interface{} {
-	exist,val := input.Has(key)
-	if(exist) {
-		return  val;
-	} else {
-		return defaultVal
-	}
-}
 
 // BoolValue transforms a form value in different formats into a boolean type.
-func (input *Request) BoolValue( k string) bool {
-	val :=input.FormValue(k)
+func (input *Request) GetBoolValue( k string) bool {
+	val := input.GetStringValue(k)
 	value, err := strconv.ParseBool(val)
 
-	if err!=nil {
-		return  false
+	if err != nil {
+		return false
 	} else {
 		return value
 	}
 }
+// BoolValue transforms a form value in different formats into a boolean type.
+func (input *Request) GetIntValue( k string) int64 {
+	val := input.GetStringValue(k)
+	value, err := strconv.ParseInt(val, 0, 64)
 
-// BoolValueOrDefault returns the default bool passed if the query param is
-// missing, otherwise it's just a proxy to boolValue above
-func (input *Request) BoolValueOrDefault( k string, d bool) bool {
-	if _, ok := input.Form[k]; !ok {
-		return d
+	if err != nil {
+		return -1
+	} else {
+		return value
 	}
-	return input.BoolValue(k)
 }
+// BoolValue transforms a form value in different formats into a boolean type.
+func (input *Request) GetUintValue( k string) uint64 {
+	val := input.GetStringValue(k)
+	value, err := strconv.ParseUint(val, 0, 64)
 
-// IntValueOrZero parses a form value into an int64 type.
-// It returns 0 if the parsing fails.
-func (input *Request) IntValueOrZero(k string) int64 {
-	val, err := input.IntValueOrDefault(k, 0)
 	if err != nil {
 		return 0
+	} else {
+		return value
 	}
-	return val
 }
+// BoolValue transforms a form value in different formats into a boolean type.
+func (input *Request) GetFloatValue( k string) float64 {
+	val := input.GetStringValue(k)
 
-// Int64ValueOrDefault parses a form value into an int64 type. If there is an
-// error, returns the error. If there is no value returns the default value.
-func (input *Request) IntValueOrDefault(field string, def int64) (int64, error) {
-	if input.Form.Get(field) != "" {
-		value, err := strconv.ParseInt(input.Form.Get(field), 10, 64)
-		if err != nil {
-			return value, err
-		}
-		return value, nil
+	value, err := strconv.ParseFloat(val, 64)
+
+	if err != nil {
+		return -1
+	} else {
+		return value
 	}
-	return def, nil
 }
-
