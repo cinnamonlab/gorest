@@ -1,31 +1,38 @@
 package gorest
 import (
 	"testing"
-	"net/url"
+	//"net/url"
 	"net/http"
 	"strings"
 )
 
 func TestGetMethod(t *testing.T) {
-	req := &http.Request{Method: "GET"}
-	req.URL, _ = url.Parse("http://www.google.com/search?str=foo&int=2&float=12.4&bool=1")
+	req, _ := http.NewRequest("POST", "http://www.google.com/search?str=foo",
+		strings.NewReader("int=2&float=12.4&bool=1"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
 
 
 	gorest_request := &Request{req,nil}
 
-	if q := gorest_request.GetStringValue("str"); q != "foo" {
+	_,err := gorest_request.GetStringValue("sss");
+
+	if err==nil {
+		t.Error("Wrong");
+	}
+
+	if q := gorest_request.GetStringValueOrDefault("str",""); q != "foo" {
 		t.Errorf("GetStringValue Wrong!")
 	}
-	if ival := gorest_request.GetIntValue("int"); ival != 2 {
+	if ival := gorest_request.GetIntValueOrDefault("int",0); ival != 2 {
 		t.Errorf("GetIntValue Wrong!")
 	}
-	if floatVal := gorest_request.GetFloatValue("float"); floatVal != 12.4 {
+	if floatVal := gorest_request.GetFloatValueOrDefault("float",-1); floatVal != 12.4 {
 		t.Errorf("GetFloatValue Wrong!")
 	}
-	if uVal := gorest_request.GetUintValue("int"); uVal != 2 {
+	if uVal := gorest_request.GetUintValueOrDefault("int",0); uVal != 2 {
 		t.Errorf("GetUintValue Wrong!")
 	}
-	if boolVal := gorest_request.GetBoolValue("bool"); boolVal != true {
+	if boolVal := gorest_request.GetBoolValueOrDefault("bool",false); boolVal != true {
 		t.Errorf("GetBoolValue Wrong!")
 	}
 }
@@ -38,19 +45,19 @@ func TestPOSTFormValueMethod(t *testing.T) {
 
 	gorest_request := &Request{req,nil}
 
-	if q := gorest_request.GetStringValue("str"); q != "foo" {
+	if q := gorest_request.GetStringValueOrDefault("str",""); q != "foo" {
 		t.Errorf("GetStringValue Wrong!")
 	}
-	if ival := gorest_request.GetIntValue("int"); ival != 2 {
+	if ival := gorest_request.GetIntValueOrDefault("int",0); ival != 2 {
 		t.Errorf("GetIntValue Wrong!")
 	}
-	if floatVal := gorest_request.GetFloatValue("float"); floatVal != 12.4 {
+	if floatVal := gorest_request.GetFloatValueOrDefault("float",-1); floatVal != 12.4 {
 		t.Errorf("GetFloatValue Wrong!")
 	}
-	if uVal := gorest_request.GetUintValue("int"); uVal != 2 {
+	if uVal := gorest_request.GetUintValueOrDefault("int",0); uVal != 2 {
 		t.Errorf("GetUintValue Wrong!")
 	}
-	if boolVal := gorest_request.GetBoolValue("bool"); boolVal != true {
+	if boolVal := gorest_request.GetBoolValueOrDefault("bool",false); boolVal != true {
 		t.Errorf("GetBoolValue Wrong!")
 	}
 }
@@ -83,19 +90,19 @@ func TestPUTMethod(t *testing.T) {
 
 	gorest_request := &Request{req,nil}
 
-	if q := gorest_request.GetStringValue("str"); q != "foo" {
+	if q := gorest_request.GetStringValueOrDefault("str",""); q != "foo" {
 		t.Errorf("GetStringValue Wrong!")
 	}
-	if ival := gorest_request.GetIntValue("int"); ival != 2 {
+	if ival := gorest_request.GetIntValueOrDefault("int",0); ival != 2 {
 		t.Errorf("GetIntValue Wrong!")
 	}
-	if floatVal := gorest_request.GetFloatValue("float"); floatVal != 12.4 {
+	if floatVal := gorest_request.GetFloatValueOrDefault("float",-1); floatVal != 12.4 {
 		t.Errorf("GetFloatValue Wrong!")
 	}
-	if uVal := gorest_request.GetUintValue("int"); uVal != 2 {
+	if uVal := gorest_request.GetUintValueOrDefault("int",0); uVal != 2 {
 		t.Errorf("GetUintValue Wrong!")
 	}
-	if boolVal := gorest_request.GetBoolValue("bool"); boolVal != true {
+	if boolVal := gorest_request.GetBoolValueOrDefault("bool",false); boolVal != true {
 		t.Errorf("GetBoolValue Wrong!")
 	}
 }
@@ -106,19 +113,19 @@ func TestDELETEMethod(t *testing.T) {
 
 	gorest_request := &Request{req,nil}
 
-	if q := gorest_request.GetStringValue("str"); q != "foo" {
+	if q := gorest_request.GetStringValueOrDefault("str",""); q != "foo" {
 		t.Errorf("GetStringValue Wrong!")
 	}
-	if ival := gorest_request.GetIntValue("int"); ival != 2 {
+	if ival := gorest_request.GetIntValueOrDefault("int",0); ival != 2 {
 		t.Errorf("GetIntValue Wrong!")
 	}
-	if floatVal := gorest_request.GetFloatValue("float"); floatVal != 12.4 {
+	if floatVal := gorest_request.GetFloatValueOrDefault("float",-1); floatVal != 12.4 {
 		t.Errorf("GetFloatValue Wrong!")
 	}
-	if uVal := gorest_request.GetUintValue("int"); uVal != 2 {
+	if uVal := gorest_request.GetUintValueOrDefault("int",0); uVal != 2 {
 		t.Errorf("GetUintValue Wrong!")
 	}
-	if boolVal := gorest_request.GetBoolValue("bool"); boolVal != true {
+	if boolVal := gorest_request.GetBoolValueOrDefault("bool",false); boolVal != true {
 		t.Errorf("GetBoolValue Wrong!")
 	}
 }
