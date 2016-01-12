@@ -1,4 +1,4 @@
-package gorest
+package InputValidate
 import "regexp"
 
 func ValidateEmail(email string) bool {
