@@ -27,6 +27,7 @@ func (rsp * Response) Json(content interface{}, code int)  {
 
 	rsp.Write(js)
 }
+
 func (rsp * Response) Text(content string, code int)  {
 	rsp.WriteHeader(code)
 	rsp.Header().Set("Content-Type", "text/plain; charset=utf-8")

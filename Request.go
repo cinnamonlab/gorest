@@ -11,10 +11,8 @@ type Request struct {
 	params map[string]string
 }
 
-func NewRequest(request *http.Request) *Request {
-	input := &Request{request,nil}
-	input.params = make(map[string]string)
-
+func NewRequest(request *http.Request,params map[string]string) *Request {
+	input := &Request{request,params}
 	return  input
 }
 

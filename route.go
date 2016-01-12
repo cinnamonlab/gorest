@@ -12,7 +12,7 @@ type Route struct { // implement http.Handler interface
 	controllers map[string]map[string]RoutePath
 }
 
-type APIFunc func(w *Response, r *Request, vars map[string]string)
+type APIFunc func(w *Response, r *Request)
 
 var routeInstance *Route
 
@@ -87,7 +87,7 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	request := NewRequest(req)
+	request := NewRequest(req,restParams)
 
 	response := NewResponse(rsp)
 
@@ -95,7 +95,8 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 		// not found
 		http.DefaultServeMux.ServeHTTP(rsp,req)
 	} else {
-		matchRoute.Controllers(response, request, restParams)
+
+		matchRoute.Controllers(response, request)
 	}
 }
 
