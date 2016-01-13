@@ -11,6 +11,10 @@ type Request struct {
 	params map[string]string
 }
 
+const (
+	defaultMaxMemory = 32 << 20 // 32 MB
+)
+
 func NewRequest(request *http.Request,params map[string]string) *Request {
 	input := &Request{request,params}
 	return  input
@@ -40,7 +44,9 @@ func (input *Request) GetStringValue(key string) (string,error) {
 	if val, ok := input.params[key]; ok {
 		return val, nil
 	} else {
-		input.ParseForm()
+		if input.Form == nil {
+			input.ParseMultipartForm(defaultMaxMemory)
+		}
 
 		val, ok := input.Form[key]
 
