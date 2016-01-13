@@ -58,10 +58,10 @@ func checkPath(routePaths []string, requestPaths []string, restParams map[string
 
 func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 
-	if err := req.ParseForm(); err != nil {
-		http.Error(rsp, err.Error(), http.StatusBadRequest)
-		return
-	}
+	//if err := req.ParseForm(); err != nil {
+	//	http.Error(rsp, err.Error(), http.StatusBadRequest)
+	//	return
+	//}
 
 	reqPath := path.Clean(req.URL.Path)
 
