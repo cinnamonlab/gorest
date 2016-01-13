@@ -12,7 +12,7 @@ type Route struct { // implement http.Handler interface
 	controllers map[string]map[string]RoutePath
 }
 
-type APIFunc func(w *Response, r *Request)
+type APIFunc func(w Response, r *Request)
 
 var routeInstance *Route
 

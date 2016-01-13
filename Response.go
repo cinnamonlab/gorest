@@ -8,9 +8,9 @@ type Response struct {
 	http.ResponseWriter
 }
 
-func NewResponse(response http.ResponseWriter) *Response {
+func NewResponse(response http.ResponseWriter) Response {
 
-	rsp := &Response{response}
+	rsp := Response{response}
 
 	return  rsp
 }
