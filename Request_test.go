@@ -20,7 +20,7 @@ func TestGetMethod(t *testing.T) {
 		t.Error("Wrong");
 	}
 
-	if q := gorest_request.GetStringValueOrDefault("str",""); q != "foo" {
+	if q := gorest_request.GetStringValueOrDefault("str",""); q != "faa" {
 		t.Errorf("GetStringValue Wrong!")
 	}
 	if ival := gorest_request.GetIntValueOrDefault("int",0); ival != 2 {
