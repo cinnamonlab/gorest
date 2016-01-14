@@ -1,5 +1,9 @@
 package Utils
-import "strconv"
+import (
+	"strconv"
+	"crypto/md5"
+	"encoding/hex"
+)
 
 func SliceString2SliceInterface(strInputs []string) []interface{} {
 	vals := make([]interface{}, len(strInputs))
@@ -59,4 +63,10 @@ func String2BoolOrFalse(strVal string) bool  {
 	} else {
 		return val
 	}
+}
+
+func GetMD5Hash(text string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+	return hex.EncodeToString(hasher.Sum(nil))
 }
