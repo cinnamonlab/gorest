@@ -33,6 +33,9 @@ func SliceBool2SliceInterface(strInputs []bool) []interface{} {
 func Int2String(intVal int) string {
 	return strconv.Itoa(intVal)
 }
+func Int642String(intVal int64) string {
+	return strconv.FormatInt(intVal,10)
+}
 func Float2String(intVal float64) string {
 	return strconv.FormatFloat(intVal,'f',4,64)
 }
