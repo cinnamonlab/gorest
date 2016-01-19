@@ -16,20 +16,21 @@ func NewResponse(response http.ResponseWriter) Response {
 }
 
 func (rsp * Response) Json(content interface{}, code int)  {
-	rsp.WriteHeader(code)
+
 
 	js, err := json.Marshal(content)
 	if err != nil {
 		http.Error(rsp, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rsp.Header().Set("Content-Type", "application/json")
-	rsp.Write(js)
+	rsp.ResponseWriter.Header().Set("Content-Type", "application/json")
+	rsp.ResponseWriter.WriteHeader(code)
+	rsp.ResponseWriter.Write(js)
 }
 
 func (rsp * Response) Text(content string, code int)  {
+	rsp.Header().Set("Content-Type", "text/plain")
 	rsp.WriteHeader(code)
-	rsp.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	rsp.Write([]byte(content))
 }
 
