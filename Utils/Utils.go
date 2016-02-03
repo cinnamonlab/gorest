@@ -3,6 +3,8 @@ import (
 	"strconv"
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
+	"unicode/utf8"
 )
 
 func SliceString2SliceInterface(strInputs []string) []interface{} {
@@ -72,4 +74,27 @@ func GetMD5Hash(text string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+func TokenToScore(token string) int64 {
+	return String2IntOrZero(token)
+}
+
+// define how to convert between score to token
+func ScoreToToken(score int64) string  {
+	return Int642String(score)
+}
+
+func Utf8StrLen(str string) int  {
+	return utf8.RuneCountInString(str)
+}
+
+func ObjectToJson(v interface{}) string  {
+	data,err := json.Marshal(v)
+
+	if err != nil {
+		return ""
+	} else {
+		return  string(data)
+	}
 }
