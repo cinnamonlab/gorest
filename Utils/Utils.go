@@ -98,3 +98,20 @@ func ObjectToJson(v interface{}) string  {
 		return  string(data)
 	}
 }
+func JsonToObject(strJson string,v interface{}) error {
+	err := json.Unmarshal([]byte(strJson),v)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func BytesToObject(src []byte,v interface{}) error  {
+	err := json.Unmarshal(src,v)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
