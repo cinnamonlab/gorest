@@ -2,6 +2,7 @@ package gorest
 import (
 	"net/http"
 	"fmt"
+	"github.com/cinnamonlab/gorest/queue"
 )
 
 type Application struct {
@@ -22,8 +23,6 @@ func SharedApplication() *Application {
 
 func (app *Application) Init()  {
 	app.Route = GetRouteInstance()
-
-	app.startQueue();
 }
 
 func (app *Application) StartHttpServer(port string)  {
@@ -37,6 +36,6 @@ func (app *Application) StartHttpServer(port string)  {
 	}
 }
 
-func (app *Application) startQueue() {
-
+func (app *Application) StartQueue() {
+	queue.Start()
 }
