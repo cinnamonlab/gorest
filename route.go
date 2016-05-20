@@ -17,7 +17,7 @@ type APIFunc func(w Response, r *Request)
 var routeInstance *Route
 
 var currentPath string =""
-
+var request *Request
 // Singleton Route instance
 func GetRouteInstance() *Route {
 	if routeInstance == nil {
@@ -91,8 +91,7 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	request := NewRequest(req,restParams)
-
+	request = NewRequest(req,restParams)
 	response := NewResponse(rsp)
 
 	if !isMatched {
@@ -129,4 +128,8 @@ func (route *Route) AddRoute(routeBase BaseController) {
 }
 func GetCurrentPath() string {
 	return currentPath
+}
+
+func GetRequest() *Request {
+	return request
 }
