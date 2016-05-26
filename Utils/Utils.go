@@ -132,3 +132,8 @@ func BaseType(t reflect.Type, expected reflect.Kind) (reflect.Type, error) {
 	}
 	return t, nil
 }
+func MakeSlidePointerFromType(t reflect.Type) reflect.Value  {
+	slide := reflect.MakeSlice(reflect.SliceOf(t),0,0);
+	sslide := reflect.New(slide.Type())
+	return sslide
+}
