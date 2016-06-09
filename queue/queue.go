@@ -21,12 +21,12 @@ func init() {
 	sharedQueue = NewQueue()
 }
 
-func Start()  {
-	sharedQueue.Start()
+func Start(numberProcess int)  {
+	sharedQueue.Start(numberProcess)
 }
 
-func (queue *Queue) Start()  {
-	workerpool.Start(5)
+func (queue *Queue) Start(numberProcess int)  {
+	workerpool.Start(numberProcess)
 }
 
 func NewTask(function QueueFunc,params ...interface{})  {
