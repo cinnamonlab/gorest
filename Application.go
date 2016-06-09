@@ -36,6 +36,6 @@ func (app *Application) StartHttpServer(port string)  {
 	}
 }
 
-func (app *Application) StartQueue() {
-	queue.Start()
+func (app *Application) StartQueue(numberProcess int) {
+	queue.Start(numberProcess)
 }
