@@ -16,8 +16,9 @@ type APIFunc func(w Response, r *Request)
 
 var routeInstance *Route
 
-var currentPath string =""
+var currentPath string = ""
 var request *Request
+
 // Singleton Route instance
 func GetRouteInstance() *Route {
 	if routeInstance == nil {
@@ -45,15 +46,15 @@ func checkPath(routePaths []string, requestPaths []string, restParams map[string
 			} else if len(match2) > 0 {
 				match = match2
 			}
-
 			if len(match) > 0 {
-				restParams[match[1]]=requestPaths[key]
+				restParams[match[1]] = requestPaths[key]
 			} else {
 				if requestPaths[key] != val {
 					return false
 				}
 			}
 		}
+
 		return isMatch
 	}
 }
@@ -86,17 +87,17 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 		if checkPath(controller.Paths, pathElems, inputPrams) {
 			matchRoute = controller
 			restParams = inputPrams
-			isMatched=true
+			isMatched = true
 			break
 		}
 	}
 
-	request = NewRequest(req,restParams)
+	request = NewRequest(req, restParams)
 	response := NewResponse(rsp)
 
 	if !isMatched {
 		// not found
-		http.DefaultServeMux.ServeHTTP(rsp,req)
+		http.DefaultServeMux.ServeHTTP(rsp, req)
 	} else {
 
 		matchRoute.Controllers(response, request)
@@ -105,9 +106,9 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 
 //define RoutePath struct
 type RoutePath struct {
-	Method     string
-	Path       string
-	Paths      []string
+	Method      string
+	Path        string
+	Paths       []string
 	Controllers APIFunc
 }
 

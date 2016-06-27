@@ -1,13 +1,16 @@
 package gorest
+
 import (
-	"net/http"
 	"fmt"
+	"net/http"
+
 	"github.com/cinnamonlab/gorest/queue"
 )
 
+// Applicaton packae export
 type Application struct {
 	Config interface{} // the application config
-	Route *Route
+	Route  *Route
 }
 
 var application *Application
@@ -21,18 +24,18 @@ func SharedApplication() *Application {
 	return application
 }
 
-func (app *Application) Init()  {
+func (app *Application) Init() {
 	app.Route = GetRouteInstance()
 }
 
-func (app *Application) StartHttpServer(port string)  {
-	err := http.ListenAndServe(port,application.Route);
+func (app *Application) StartHttpServer(port string) {
+	err := http.ListenAndServe(port, application.Route)
 
-	if(err!=nil) {
-		fmt.Println("Error:"+err.Error())
+	if err != nil {
+		fmt.Println("Error:" + err.Error())
 		panic(err)
-	} else  {
-		fmt.Println("Http Server started at http://localhost:" + port);
+	} else {
+		fmt.Println("Http Server started at http://localhost:" + port)
 	}
 }
 
