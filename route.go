@@ -72,6 +72,14 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 
 	pathElems := strings.Split(reqPath, "/")
 
+	cleanedPathElements := make([]string,0)
+
+	for _, value := range pathElems {
+		if len(value)>0 {
+			cleanedPathElements= append(cleanedPathElements,value)
+		}
+	}
+
 	var matchRoute RoutePath
 
 	isMatched := false
@@ -83,8 +91,15 @@ func (route *Route) ServeHTTP(rsp http.ResponseWriter, req *http.Request) {
 	for _, controller := range routePaths {
 
 		inputPrams := map[string]string{}
+		if len(cleanedPathElements)>0 {
 
-		if checkPath(controller.Paths, pathElems, inputPrams) {
+			if ok , _ := controller.IgnorePaths[cleanedPathElements[0]]; ok {
+				continue
+			}
+		}
+
+
+		if checkPath(controller.Paths, cleanedPathElements, inputPrams) {
 			matchRoute = controller
 			restParams = inputPrams
 			isMatched = true
@@ -110,6 +125,7 @@ type RoutePath struct {
 	Path        string
 	Paths       []string
 	Controllers APIFunc
+	IgnorePaths map[string]bool
 }
 
 // register routes from controller instance
